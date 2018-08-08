@@ -417,6 +417,15 @@ export default class ChatRoom extends Listenable {
             = jid && jid.indexOf('@') > 0
                 && this.options.hiddenDomain
                     === jid.substring(jid.indexOf('@') + 1, jid.indexOf('/'));
+        if (!member.isHiddenDomain && jid) {
+            // Support any XMPP servers without virtual domain capability
+            const slash = jid.indexOf('/');
+
+            member.isHiddenDomain
+                = (slash > 0
+                  && this.options.hiddenJid === jid.substring(0, slash))
+                  || (slash < 0 && this.options.hiddenJid === jid);
+        }
 
         const xEl = pres.querySelector('x');
 
